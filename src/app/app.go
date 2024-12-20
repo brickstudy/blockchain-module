@@ -4,6 +4,8 @@ import (
 	"github.com/brickstudy/blockchain-module/src/app/repository"
 	"github.com/brickstudy/blockchain-module/src/app/service"
 	"github.com/brickstudy/blockchain-module/src/config"
+
+	"github.com/inconshreveable/log15"
 )
 
 type App struct {
@@ -11,11 +13,14 @@ type App struct {
 
 	serivce    *service.Service
 	repository *repository.Repository
+
+	log log15.Logger
 }
 
 func NewApp(config *config.Config) {
 	a := &App{
 		config: config,
+		log:    log15.New("module", "app"),
 	}
 
 	var err error

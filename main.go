@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
 
+	"github.com/brickstudy/blockchain-module/src/app"
 	"github.com/brickstudy/blockchain-module/src/config"
 )
 
@@ -16,5 +16,5 @@ func main() {
 	flag.Parse()
 
 	c := config.NewConfig(*configFlag)
-	fmt.Println(c.Mongo)
+	app.NewApp(c)
 }
