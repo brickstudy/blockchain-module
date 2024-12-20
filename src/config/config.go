@@ -11,6 +11,10 @@ type Config struct {
 		Uri string
 		DB  string
 	}
+
+	Info struct {
+		Version string
+	}
 }
 
 func NewConfig(path string) *Config {
