@@ -23,3 +23,15 @@ func (r *Repository) CreateNewWallet(wallet *dto.Wallet) error {
 		return nil
 	}
 }
+
+func (r *Repository) GetWallet(pk string) (*dto.Wallet, error) {
+	ctx := context.Background()
+
+	filter := bson.M{"privateKey": pk}
+	var wallet dto.Wallet
+	if err := r.wallet.FindOne(ctx, filter, options.FindOne()).Decode(&wallet); err != nil {
+		return nil, err
+	} else {
+		return &wallet, nil
+	}
+}

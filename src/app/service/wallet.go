@@ -42,7 +42,6 @@ func (s *Service) newWallet() (string, string, error) {
 }
 
 func (s *Service) MakeWallet() *dto.Wallet {
-	fmt.Println("들어옴")
 	var wallet dto.Wallet
 	var err error
 
@@ -52,5 +51,13 @@ func (s *Service) MakeWallet() *dto.Wallet {
 		return nil
 	} else {
 		return &wallet
+	}
+}
+
+func (s *Service) GetWallet(pk string) (*dto.Wallet, error) {
+	if wallet, err := s.repository.GetWallet(pk); err != nil {
+		return nil, err
+	} else {
+		return wallet, nil
 	}
 }

@@ -2,16 +2,15 @@ package app
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/brickstudy/blockchain-module/src/app/global"
 	"github.com/brickstudy/blockchain-module/src/app/repository"
 	"github.com/brickstudy/blockchain-module/src/app/service"
 	"github.com/brickstudy/blockchain-module/src/config"
-	. "github.com/brickstudy/blockchain-module/src/dto"
 
 	"github.com/inconshreveable/log15"
 )
@@ -40,11 +39,16 @@ func NewApp(config *config.Config) {
 
 		sc := bufio.NewScanner(os.Stdin)
 
-		useCase()
-
 		for {
-			sc.Scan()
+			useCase()
 
+			from := global.FROM()
+			if from != "" {
+				a.log.Info("Current Connected Wallet", "from", from)
+				fmt.Println()
+			}
+
+			sc.Scan()
 			input := strings.Split(sc.Text(), " ")
 			if err = a.command(input); err != nil {
 				a.log.Error("Falied to call cli", "err", err, "input", input)
@@ -53,39 +57,4 @@ func NewApp(config *config.Config) {
 			}
 		}
 	}
-}
-
-func (a App) command(input []string) error {
-	msg := errors.New("Check use case.")
-
-	if len(input) == 0 {
-		return msg
-	} else {
-		switch input[0] {
-		case CreateWallet:
-			fmt.Println("CreateWallet!!")
-			a.serivce.MakeWallet()
-		case TransferCoin:
-			fmt.Println("TransferCoin!!")
-		case MintCoin:
-			fmt.Println("MintCoin!!")
-		default:
-			return msg
-		}
-		fmt.Println()
-	}
-	return nil
-}
-
-func useCase() {
-	fmt.Println()
-
-	fmt.Println("Blockchain command")
-	fmt.Println()
-	fmt.Println("Use Case")
-
-	fmt.Println("1. ", CreateWallet)
-	fmt.Println("2. ", TransferCoin, "<to> <amount>")
-	fmt.Println("3. ", MintCoin, "<to> <amount>")
-	fmt.Println()
 }
