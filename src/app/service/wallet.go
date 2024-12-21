@@ -1,22 +1,55 @@
 package service
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"errors"
 	"fmt"
 
-	"github.com/brickstudy/blockchain-module/src/constants"
+	"github.com/brickstudy/blockchain-module/src/dto"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 func (s *Service) newWallet() (string, string, error) {
-	return "", "", nil
+	p256 := elliptic.P256()
+
+	if private, err := ecdsa.GenerateKey(p256, rand.Reader); err != nil {
+		return "", "", err
+	} else if private == nil {
+		return "", "", errors.New("private key is nill")
+	} else {
+		privateKeyBytes := crypto.FromECDSA(private)
+		privateKey := hexutil.Encode(privateKeyBytes)
+		fmt.Println(privateKey)
+
+		importedPrivateKey, err := crypto.HexToECDSA(privateKey[2:])
+		if err != nil {
+			return "", "", err
+		}
+
+		PublicKey := importedPrivateKey.Public()
+		publicKeyECDSA, ok := PublicKey.(*ecdsa.PublicKey)
+		if !ok {
+			return "", "", errors.New("Error casting public key type.")
+		}
+
+		address := crypto.PubkeyToAddress(*publicKeyECDSA)
+
+		return privateKey, hexutil.Encode(address[:]), nil
+	}
 }
 
-func (s *Service) MakeWallet() *constants.Wallet {
+func (s *Service) MakeWallet() *dto.Wallet {
 	fmt.Println("들어옴")
-	var wallet constants.Wallet
+	var wallet dto.Wallet
 	var err error
 
-	if wallet.PrivateKey, wallet.PrivateKey, err = s.newWallet(); err != nil {
+	if wallet.PrivateKey, wallet.PublicKey, err = s.newWallet(); err != nil {
 		panic(err)
+	} else if err = s.repository.CreateNewWallet(&wallet); err != nil {
+		return nil
 	} else {
 		return &wallet
 	}

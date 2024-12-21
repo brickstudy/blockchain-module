@@ -11,17 +11,15 @@ import (
 
 type Repository struct {
 	client *mongo.Client
-	db     *mongo.Database
-
-	config *config.Config
+	wallet *mongo.Collection
+	tx     *mongo.Collection
 
 	log log15.Logger
 }
 
 func NewRepository(config *config.Config) (*Repository, error) {
 	r := &Repository{
-		config: config,
-		log:    log15.New("module", "repository"),
+		log: log15.New("module", "mongoDB/repository"),
 	}
 
 	var err error
@@ -36,8 +34,10 @@ func NewRepository(config *config.Config) (*Repository, error) {
 		r.log.Error("Falied to ping to mongo", "uri", mConfig.Uri)
 		return nil, err
 	} else {
-		// TODO : connection setting
-		r.db = r.client.Database(mConfig.DB)
+		db := r.client.Database(config.Mongo.DB, nil)
+
+		r.wallet = db.Collection("wallet")
+		r.tx = db.Collection("tx")
 
 		r.log.Info("Succes to connet mongo", "uri", mConfig.Uri, "db", mConfig.DB)
 		return r, nil

@@ -11,7 +11,7 @@ import (
 	"github.com/brickstudy/blockchain-module/src/app/repository"
 	"github.com/brickstudy/blockchain-module/src/app/service"
 	"github.com/brickstudy/blockchain-module/src/config"
-	. "github.com/brickstudy/blockchain-module/src/constants"
+	. "github.com/brickstudy/blockchain-module/src/dto"
 
 	"github.com/inconshreveable/log15"
 )
