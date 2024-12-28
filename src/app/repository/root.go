@@ -13,6 +13,7 @@ type Repository struct {
 	client *mongo.Client
 	wallet *mongo.Collection
 	tx     *mongo.Collection
+	block  *mongo.Collection
 
 	log log15.Logger
 }
@@ -38,6 +39,7 @@ func NewRepository(config *config.Config) (*Repository, error) {
 
 		r.wallet = db.Collection("wallet")
 		r.tx = db.Collection("tx")
+		r.block = db.Collection("block")
 
 		r.log.Info("Succes to connet mongo", "uri", mConfig.Uri, "db", mConfig.DB)
 		return r, nil

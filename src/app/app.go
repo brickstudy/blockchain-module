@@ -24,7 +24,7 @@ type App struct {
 	log log15.Logger
 }
 
-func NewApp(config *config.Config) {
+func NewApp(config *config.Config, difficulty int64) {
 	a := &App{
 		config: config,
 		log:    log15.New("module", "app"),
@@ -34,7 +34,7 @@ func NewApp(config *config.Config) {
 	if a.repository, err = repository.NewRepository(config); err != nil {
 		panic(err)
 	} else {
-		a.serivce = service.NewSerivce(config, a.repository)
+		a.serivce = service.NewSerivce(config, a.repository, difficulty)
 		a.log.Info("Module started", "time", time.Now().Unix())
 
 		sc := bufio.NewScanner(os.Stdin)

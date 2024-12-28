@@ -11,13 +11,16 @@ type Service struct {
 
 	repository *repository.Repository
 
+	difficulty int64
+
 	log log15.Logger
 }
 
-func NewSerivce(config *config.Config, repository *repository.Repository) *Service {
+func NewSerivce(config *config.Config, repository *repository.Repository, difficulty int64) *Service {
 	s := &Service{
 		config:     config,
 		repository: repository,
+		difficulty: difficulty,
 		log:        log15.New("module", "app"),
 	}
 	return s
