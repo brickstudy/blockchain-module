@@ -14,6 +14,9 @@ func (s *Service) CreateBlock(txs []*dto.Transaction, prevHash []byte, height in
 		if err == mongo.ErrNoDocuments {
 			s.log.Info("Genesis Block will be created")
 			newBlock := createBlockInner(txs, pHash, height)
+			pow := s.NewPow(newBlock)
+
+			newBlock.Nonce, newBlock.Hash = pow.RunMinning()
 
 			return newBlock
 		} else {
@@ -22,8 +25,10 @@ func (s *Service) CreateBlock(txs []*dto.Transaction, prevHash []byte, height in
 		}
 	} else {
 		pHash = latestBlock.Hash
-
 		newBlock := createBlockInner(txs, pHash, height)
+		pow := s.NewPow(newBlock)
+
+		newBlock.Nonce, newBlock.Hash = pow.RunMinning()
 		return newBlock
 	}
 }

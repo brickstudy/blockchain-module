@@ -82,6 +82,7 @@ func (a App) command(input []string) error {
 
 		case "4", TransferCoin:
 			confirmChat(TransferCoin)
+			a.serivce.CreateBlock([]*Transaction{}, []byte{}, 0)
 		case "5", MintCoin:
 			confirmChat(MintCoin)
 		default:
